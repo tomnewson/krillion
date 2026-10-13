@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "krillion-excel", "runtimeExecutable": "node", "runtimeArgs": ["--watch", "server.js"], "port": 4322 }
+  ]
+}

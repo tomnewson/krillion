@@ -1,0 +1,22 @@
+{
+  "name": "krillion-excel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An Excel-looking front end over krillion.io",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "build": "node scripts/build-pages.js",
+    "deploy:worker": "wrangler deploy"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fluentui/svg-icons": "^1.1.341"
+  },
+  "devDependencies": {
+    "wrangler": "^4.140.0"
+  }
+}

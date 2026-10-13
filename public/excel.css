@@ -1,0 +1,2791 @@
+/* Excel skin for Krillion.
+ * Two parts: the chrome (#xl-*) injected by excel.js, and overrides that
+ * restyle the real game (a full-screen pixel-art dive) as cells on a worksheet. */
+
+@import url("https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&display=swap");
+
+:root {
+  --xl-green: #217346;
+  --xl-green-dark: #185c37;
+  --xl-green-hover: #2a8a57;
+  --xl-green-light: #e9f5ee;
+  --xl-ui: #f3f2f1;
+  --xl-ui-border: #e1dfdd;
+  --xl-ui-text: #323130;
+  --xl-ui-muted: #605e5c;
+  --xl-grid: #e1e1e1;
+  --xl-cell-border: #d4d4d4;
+  --xl-head-bg: #f3f2f1;
+  --xl-head-sel: #d2d0ce;
+  --xl-link: #0563c1;
+  --xl-table-head: #4472c4;
+  --xl-table-band: #d9e1f2;
+  --xl-accent2: #ed7d31;
+
+  --xl-title-h: 32px;
+  --xl-tabs-h: 30px;
+  --xl-ribbon-h: 96px;
+  --xl-fbar-h: 36px;
+  --xl-colh-h: 20px;
+  --xl-rowh-w: 40px;
+  --xl-top: calc(var(--xl-title-h) + var(--xl-tabs-h) + var(--xl-ribbon-h) + var(--xl-fbar-h) + var(--xl-colh-h));
+  --xl-bottom: 52px;
+  --xl-zoom: 1;
+
+  --xl-cell-font: "Aptos Narrow", "Aptos", Calibri, Carlito, "Segoe UI", sans-serif;
+  --xl-ui-font: "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  color-scheme: light;
+}
+
+html.xl-no-headings {
+  --xl-colh-h: 0px;
+  --xl-rowh-w: 0px;
+}
+
+html,
+body {
+  background: #fff !important;
+}
+
+body {
+  padding: var(--xl-top) 0 var(--xl-bottom) var(--xl-rowh-w) !important;
+  overflow-x: hidden;
+}
+
+/* ====================================================================== */
+/* Chrome                                                                 */
+/* ====================================================================== */
+
+[id^="xl-"],
+[id^="xl-"] * {
+  box-sizing: border-box;
+  font-family: var(--xl-ui-font);
+}
+[id^="xl-"] button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: default;
+}
+
+.xl-ico {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: var(--ico) center / contain no-repeat;
+  mask: var(--ico) center / contain no-repeat;
+}
+.xl-chev {
+  width: 12px;
+  height: 12px;
+}
+
+#xl-top {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 2147483000;
+  background: var(--xl-ui);
+  user-select: none;
+}
+
+/* --- title bar --- */
+#xl-titlebar {
+  height: var(--xl-title-h);
+  background: var(--xl-green);
+  color: #fff;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  font-size: 12px;
+  padding: 0 0 0 10px;
+}
+.xl-tb-left,
+.xl-tb-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.xl-tb-right {
+  justify-content: flex-end;
+  gap: 10px;
+}
+.xl-autosave {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+.xl-toggle {
+  width: 30px;
+  height: 14px;
+  border: 1px solid #fff;
+  border-radius: 7px;
+  position: relative;
+  background: #fff;
+}
+.xl-toggle span {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--xl-green);
+}
+.xl-qat {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+}
+.xl-qat .xl-ico {
+  width: 16px;
+  height: 16px;
+}
+.xl-qat:last-child .xl-ico {
+  width: 12px;
+}
+.xl-qat:hover,
+.xl-winbtns span:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.xl-tb-title {
+  font-size: 12px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+.xl-saved {
+  opacity: 0.85;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.xl-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  width: min(300px, 26vw);
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--xl-ui-muted);
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.xl-search .xl-ico {
+  width: 14px;
+  height: 14px;
+}
+#xl-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #c7e0f4;
+  color: #004578;
+  font-size: 11px;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+}
+#xl-avatar.is-signed-in {
+  background: #fde7c7;
+  color: #8a4a00;
+}
+.xl-winbtns {
+  display: flex;
+  height: var(--xl-title-h);
+}
+.xl-winbtns span {
+  width: 46px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+}
+.xl-winbtns span:last-child:hover {
+  background: #c42b1c;
+}
+
+/* --- ribbon tabs --- */
+#xl-tabs {
+  height: var(--xl-tabs-h);
+  background: var(--xl-green);
+  display: flex;
+  align-items: flex-end;
+  padding: 0 6px;
+  gap: 2px;
+}
+.xl-tab {
+  height: 26px;
+  padding: 0 12px !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  white-space: nowrap;
+}
+.xl-tab:hover {
+  background: var(--xl-green-hover) !important;
+}
+.xl-tab.is-active {
+  background: var(--xl-ui) !important;
+  color: var(--xl-green) !important;
+}
+.xl-tab-file {
+  font-weight: 400;
+}
+.xl-tabs-spacer {
+  flex: 1;
+}
+.xl-tab-extra,
+.xl-tab-share {
+  height: 24px;
+  margin-bottom: 3px;
+  padding: 0 10px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff !important;
+  font-size: 12px !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+.xl-tab-share {
+  background: #fff !important;
+  color: var(--xl-green) !important;
+  border-color: #fff !important;
+}
+.xl-tab-extra .xl-ico,
+.xl-tab-share .xl-ico {
+  width: 16px;
+  height: 16px;
+}
+
+/* --- ribbon --- */
+#xl-ribbon {
+  height: var(--xl-ribbon-h);
+  background: var(--xl-ui);
+  border-bottom: 1px solid var(--xl-ui-border);
+  overflow: hidden;
+}
+.xl-panel {
+  display: none;
+  height: 100%;
+  padding: 4px 4px 0;
+}
+.xl-panel.is-active {
+  display: flex;
+}
+.xl-grp {
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px;
+  border-right: 1px solid #c8c6c4;
+  margin: 2px 0 4px;
+  flex: none;
+}
+.xl-grp-body {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+.xl-grp-label {
+  font-size: 11px;
+  color: var(--xl-ui-muted);
+  text-align: center;
+  line-height: 16px;
+  white-space: nowrap;
+}
+.xl-rb {
+  color: var(--xl-ui-text) !important;
+  font-size: 11px !important;
+  border-radius: 2px !important;
+}
+.xl-rb:hover {
+  background: #e1dfdd !important;
+}
+.xl-rb:active {
+  background: #c8c6c4 !important;
+}
+.xl-rb-lg {
+  width: auto;
+  min-width: 40px;
+  max-width: 66px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  padding: 4px 4px 0 !important;
+  line-height: 1.2;
+  text-align: center;
+}
+.xl-rb-lg .xl-ico {
+  width: 32px;
+  height: 32px;
+  color: var(--xl-green);
+}
+.xl-rb-lg span {
+  white-space: normal;
+}
+.xl-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.xl-rb-sm {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px !important;
+  white-space: nowrap;
+}
+.xl-rb-sm .xl-ico {
+  width: 16px;
+  height: 16px;
+}
+.xl-rb-sm span:empty {
+  display: none;
+}
+.xl-rb[data-act] .xl-ico {
+  color: var(--xl-green);
+}
+.xl-rb-sm .xl-ico {
+  color: #3b3a39;
+}
+.xl-panel .xl-rb[data-act="hint"] .xl-ico {
+  color: #c19c00;
+}
+.xl-panel .xl-rb[data-act="share"] .xl-ico,
+.xl-panel .xl-rb[data-act="allAnswers"] .xl-ico {
+  color: #0f6cbd;
+}
+.xl-font-grp {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 6px;
+}
+.xl-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.xl-combo {
+  height: 22px;
+  border: 1px solid #c8c6c4;
+  background: #fff;
+  font-size: 11px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--xl-ui-text);
+  white-space: nowrap;
+}
+.xl-vsep {
+  width: 1px;
+  height: 18px;
+  background: #c8c6c4;
+  margin: 0 3px;
+}
+.xl-mini {
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+  color: var(--xl-ui-text);
+}
+.xl-checks {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 4px 14px;
+  font-size: 11px;
+  color: var(--xl-ui-text);
+}
+.xl-checks label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.xl-checks input {
+  accent-color: var(--xl-green);
+  margin: 0;
+}
+
+/* Narrower windows drop the least useful groups, as Excel collapses them. */
+@media (max-width: 1500px) {
+  .xl-grp[data-group="Cells"] { display: none; }
+}
+@media (max-width: 1280px) {
+  .xl-grp[data-group="Styles"],
+  .xl-grp[data-group="Number"] { display: none; }
+}
+@media (max-width: 1000px) {
+  .xl-grp[data-group="Alignment"],
+  .xl-grp[data-group="Illustrations"],
+  .xl-grp[data-group="Text"] { display: none; }
+}
+
+/* --- formula bar --- */
+#xl-formulabar {
+  height: var(--xl-fbar-h);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px 5px 6px;
+  background: #fff;
+  border-bottom: 1px solid var(--xl-ui-border);
+}
+#xl-namebox {
+  width: 96px;
+  height: 24px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  border: 1px solid #c8c6c4;
+  padding-right: 4px;
+  background: #fff;
+}
+#xl-namebox input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  font-size: 12px;
+  padding: 0 6px;
+  background: transparent;
+  color: var(--xl-ui-text);
+}
+.xl-fx-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #8a8886;
+  font-size: 13px;
+  padding: 0 4px;
+}
+.xl-fx-btns button:hover {
+  color: var(--xl-ui-text) !important;
+}
+.xl-dots {
+  color: #c8c6c4;
+}
+.xl-fx {
+  font-family: "Times New Roman", serif !important;
+  font-size: 14px;
+  color: var(--xl-ui-text);
+  font-weight: 600;
+}
+#xl-fx-input {
+  flex: 1;
+  height: 24px;
+  min-width: 0;
+  border: 1px solid #c8c6c4;
+  outline: 0;
+  font: 13px var(--xl-cell-font) !important;
+  padding: 0 6px;
+  color: #000;
+  background: #fff;
+}
+#xl-fx-input:focus {
+  border-color: var(--xl-green);
+}
+.xl-fx-expand {
+  color: var(--xl-ui-muted) !important;
+}
+.xl-fx-expand .xl-ico {
+  width: 14px;
+  height: 14px;
+}
+
+/* --- column + row headings --- */
+#xl-colheads {
+  height: var(--xl-colh-h);
+  display: flex;
+  background: var(--xl-head-bg);
+  border-bottom: 1px solid #c8c6c4;
+  overflow: hidden;
+  position: relative;
+}
+#xl-corner {
+  width: var(--xl-rowh-w);
+  flex: none;
+  border-right: 1px solid #c8c6c4;
+  background: linear-gradient(135deg, transparent 55%, #b3b0ad 55%, #b3b0ad 72%, transparent 72%) no-repeat right 3px bottom 3px / 10px 10px, var(--xl-head-bg);
+  position: relative;
+  z-index: 1;
+}
+#xl-cols {
+  display: flex;
+  flex: none;
+}
+#xl-cols span,
+#xl-rows span {
+  flex: none;
+  display: grid;
+  place-items: center;
+  font: 11px var(--xl-ui-font);
+  color: #444;
+  border-right: 1px solid #d2d0ce;
+}
+#xl-cols span {
+  height: var(--xl-colh-h);
+}
+#xl-cols span.is-sel,
+#xl-rows span.is-sel {
+  background: var(--xl-head-sel);
+  color: var(--xl-green);
+  font-weight: 600;
+}
+#xl-cols span.is-sel {
+  box-shadow: inset 0 -2px 0 var(--xl-green);
+}
+#xl-rows span.is-sel {
+  box-shadow: inset -2px 0 0 var(--xl-green);
+}
+#xl-rowheads {
+  position: fixed;
+  z-index: 2147482999;
+  left: 0;
+  top: var(--xl-top);
+  bottom: var(--xl-bottom);
+  width: var(--xl-rowh-w);
+  background: var(--xl-head-bg);
+  border-right: 1px solid #c8c6c4;
+  overflow: hidden;
+  user-select: none;
+}
+#xl-rows span {
+  border-right: 0;
+  border-bottom: 1px solid #d2d0ce;
+  width: 100%;
+}
+html.xl-no-headings #xl-colheads,
+html.xl-no-headings #xl-rowheads {
+  display: none;
+}
+
+/* --- selection --- */
+#xl-selection {
+  position: absolute;
+  z-index: 50;
+  display: none;
+  border: 2px solid var(--xl-green);
+  pointer-events: none;
+}
+#xl-selection .xl-handle {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 6px;
+  height: 6px;
+  background: var(--xl-green);
+  border: 1px solid #fff;
+}
+
+/* --- sheet tabs + status bar --- */
+#xl-bottom {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 2147483000;
+  user-select: none;
+}
+#xl-sheetbar {
+  height: 28px;
+  display: flex;
+  align-items: stretch;
+  background: var(--xl-ui);
+  border-top: 1px solid #c8c6c4;
+  font-size: 12px;
+}
+.xl-sheetnav {
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 6px;
+  color: #a19f9d;
+  font-size: 9px;
+}
+#xl-sheettabs {
+  display: flex;
+  overflow: hidden;
+  flex: none;
+  max-width: 70vw;
+}
+.xl-sheettab {
+  padding: 0 14px !important;
+  color: var(--xl-ui-text) !important;
+  font-size: 12px !important;
+  border-right: 1px solid #d2d0ce !important;
+  white-space: nowrap;
+}
+.xl-sheettab:hover {
+  background: #e1dfdd !important;
+}
+.xl-sheettab.is-active {
+  background: #fff !important;
+  color: var(--xl-green) !important;
+  font-weight: 600;
+  box-shadow: inset 0 -3px 0 var(--xl-green);
+}
+html.xl-boss-on .xl-sheettab.is-active {
+  background: none !important;
+  color: var(--xl-ui-text) !important;
+  font-weight: 400;
+  box-shadow: none;
+}
+.xl-addsheet {
+  width: 28px;
+  font-size: 18px !important;
+  color: var(--xl-ui-muted) !important;
+  border-radius: 50% !important;
+}
+.xl-hscroll {
+  flex: 1;
+  margin: 7px 12px 7px 24px;
+  background: #fff;
+  border: 1px solid #e1dfdd;
+  position: relative;
+}
+.xl-hscroll div {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  bottom: 2px;
+  width: 30%;
+  background: #c8c6c4;
+  border-radius: 3px;
+}
+#xl-statusbar {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 10px;
+  background: var(--xl-ui);
+  border-top: 1px solid var(--xl-ui-border);
+  font-size: 11px;
+  color: var(--xl-ui-text);
+  white-space: nowrap;
+}
+.xl-acc {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.xl-acc .xl-ico {
+  width: 14px;
+  height: 14px;
+}
+.xl-status-spacer {
+  flex: 1;
+}
+#xl-stats {
+  white-space: pre;
+}
+.xl-views {
+  display: flex;
+  gap: 6px;
+  color: var(--xl-ui-muted);
+}
+.xl-views .xl-ico {
+  width: 16px;
+  height: 16px;
+}
+.xl-views .xl-ico:first-child {
+  color: var(--xl-green);
+}
+.xl-zoom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.xl-zoom button {
+  font-size: 13px !important;
+  min-width: 14px;
+}
+.xl-zoom-track {
+  width: 100px;
+  height: 1px;
+  background: #8a8886;
+  position: relative;
+}
+.xl-zoom-track::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  height: 7px;
+  width: 1px;
+  background: #8a8886;
+}
+#xl-zoom-thumb {
+  position: absolute;
+  top: -6px;
+  width: 4px;
+  height: 12px;
+  margin-left: -2px;
+  background: #3b3a39;
+}
+#xl-zoom-pct {
+  min-width: 38px !important;
+  text-align: right;
+}
+
+/* --- backstage (File) --- */
+#xl-backstage {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483100;
+  display: flex;
+  background: #fff;
+}
+#xl-backstage[hidden],
+#xl-boss[hidden] {
+  display: none;
+}
+#xl-backstage nav {
+  width: 220px;
+  background: var(--xl-green);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0 16px;
+}
+#xl-backstage nav button {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 22px !important;
+  font-size: 14px !important;
+  text-align: left;
+}
+#xl-backstage nav button:hover {
+  background: var(--xl-green-hover) !important;
+}
+#xl-backstage nav .is-active {
+  background: var(--xl-green-dark) !important;
+}
+.xl-bs-back {
+  margin-bottom: 12px;
+}
+.xl-bs-spacer {
+  flex: 1;
+}
+#xl-backstage section {
+  flex: 1;
+  padding: 36px 48px;
+  overflow: auto;
+  color: var(--xl-ui-text);
+}
+#xl-backstage h1 {
+  font-size: 34px;
+  font-weight: 300;
+  margin: 0 0 22px;
+}
+#xl-backstage h2 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 30px 0 10px;
+}
+#xl-backstage p {
+  font-size: 13px;
+  max-width: 640px;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+.xl-bs-note {
+  color: var(--xl-ui-muted);
+}
+.xl-bs-new {
+  display: flex;
+  gap: 22px;
+}
+.xl-bs-new button {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px !important;
+  text-align: left;
+}
+.xl-bs-thumb {
+  display: block;
+  width: 150px;
+  height: 110px;
+  border: 1px solid #c8c6c4;
+  background-color: #fff;
+}
+.xl-bs-new button:hover .xl-bs-thumb {
+  border-color: var(--xl-green);
+  box-shadow: 0 0 0 1px var(--xl-green);
+}
+.xl-thumb-grid {
+  background-image: linear-gradient(#e1e1e1 1px, transparent 1px), linear-gradient(90deg, #e1e1e1 1px, transparent 1px);
+  background-size: 30px 11px;
+}
+.xl-thumb-list {
+  background-image: linear-gradient(var(--xl-table-head) 11px, transparent 11px), repeating-linear-gradient(#fff 0 11px, var(--xl-table-band) 11px 22px);
+  background-size: 100% 100%, 100% 100%;
+  background-position: 0 10px, 0 21px;
+  background-repeat: no-repeat;
+  background-clip: content-box;
+  padding: 10px;
+}
+.xl-thumb-tour {
+  background: linear-gradient(#217346, #217346) no-repeat 15px 20px / 60px 8px, linear-gradient(#c8c6c4, #c8c6c4) no-repeat 15px 40px / 110px 5px, linear-gradient(#c8c6c4, #c8c6c4) no-repeat 15px 52px / 90px 5px, #fff;
+}
+.xl-bs-recent {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 760px;
+  font-size: 13px;
+}
+.xl-bs-recent th {
+  text-align: left;
+  font-weight: 400;
+  color: var(--xl-ui-muted);
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--xl-ui-border);
+}
+.xl-bs-recent td {
+  padding: 9px 10px;
+}
+.xl-bs-recent td:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.xl-bs-recent td .xl-ico {
+  color: var(--xl-green);
+}
+.xl-bs-recent tr[data-act]:hover {
+  background: var(--xl-ui);
+}
+.xl-bs-list {
+  display: grid;
+  gap: 2px;
+  max-width: 520px;
+}
+.xl-bs-list button {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  text-align: left;
+  padding: 10px 12px !important;
+  font-size: 13px !important;
+}
+.xl-bs-list button span {
+  grid-column: 2;
+  color: var(--xl-ui-muted);
+  font-size: 12px;
+}
+.xl-bs-list button .xl-ico {
+  grid-row: span 2;
+  color: var(--xl-green);
+}
+.xl-bs-list button:hover {
+  background: var(--xl-ui) !important;
+}
+.xl-bs-primary {
+  background: var(--xl-green) !important;
+  color: #fff !important;
+  padding: 7px 16px !important;
+  font-size: 13px !important;
+  border-radius: 2px !important;
+}
+.xl-bs-primary:hover {
+  background: var(--xl-green-dark) !important;
+}
+.xl-bs-secondary {
+  background: #fff !important;
+  color: var(--xl-ui-text) !important;
+  border: 1px solid #8a8886 !important;
+  padding: 6px 16px !important;
+  font-size: 13px !important;
+  border-radius: 2px !important;
+  margin-left: 6px !important;
+}
+.xl-bs-secondary:hover {
+  background: var(--xl-ui) !important;
+}
+#xl-backstage code {
+  font-family: Consolas, Menlo, monospace !important;
+  font-size: 12px;
+  background: var(--xl-ui);
+  padding: 1px 4px;
+}
+
+/* --- boss sheet --- */
+#xl-boss {
+  position: fixed;
+  z-index: 2147482990;
+  top: var(--xl-top);
+  left: var(--xl-rowh-w);
+  right: 0;
+  bottom: var(--xl-bottom);
+  background-color: #fff;
+  background-image: linear-gradient(var(--xl-grid) 1px, transparent 1px), linear-gradient(90deg, var(--xl-grid) 1px, transparent 1px);
+  background-size: 64px 20px;
+  background-position: -1px -1px;
+  overflow: hidden;
+}
+#xl-boss table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  font: 14.5px var(--xl-cell-font);
+  color: #000;
+}
+#xl-boss td {
+  width: 64px;
+  height: 20px;
+  padding: 0 3px;
+  white-space: nowrap;
+  overflow: visible;
+  line-height: 20px;
+}
+#xl-boss td.n {
+  text-align: right;
+}
+#xl-boss td.b {
+  font-weight: 700;
+}
+#xl-boss .b-title td {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0e2841;
+}
+#xl-boss .b-sub td {
+  color: #7f7f7f;
+  font-style: italic;
+}
+#xl-boss .b-head td {
+  background: var(--xl-table-head);
+  color: #fff;
+  font-weight: 700;
+  text-align: right;
+}
+#xl-boss .b-head td:first-child {
+  text-align: left;
+}
+#xl-boss tr:nth-child(2n + 5):not(.b-total) td {
+  background: var(--xl-table-band);
+}
+#xl-boss .b-total td {
+  font-weight: 700;
+  border-top: 1px solid var(--xl-table-head);
+  border-bottom: 3px double var(--xl-table-head);
+}
+#xl-boss td.neg {
+  color: #9c0006;
+  background: #ffc7ce !important;
+}
+#xl-boss td.pos {
+  color: #006100;
+  background: #c6efce !important;
+}
+
+/* ====================================================================== */
+/* Sheet: the real game restyled as worksheet content                     */
+/* ====================================================================== */
+
+/* The body's content box is the worksheet: gridlines start at A1. */
+body {
+  box-sizing: border-box !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  color: #000 !important;
+  background-color: #fff !important;
+  background-image: linear-gradient(var(--xl-grid) 1px, transparent 1px), linear-gradient(90deg, var(--xl-grid) 1px, transparent 1px) !important;
+  background-size: calc(64px * var(--xl-zoom)) calc(20px * var(--xl-zoom)) !important;
+  background-position: -1px -1px !important;
+  background-origin: content-box !important;
+  background-clip: content-box !important;
+  background-attachment: local !important;
+}
+html.xl-no-grid body {
+  background-image: none !important;
+}
+
+/* Remap the site's palette to Office colours, so inline styles, SVG charts
+   and anything not restyled below still read as a worksheet. */
+html.xl-on,
+html.xl-on:root.colorblind {
+  --color-abyss: #ffffff !important;
+  --color-shallow: #f2f2f2 !important;
+  --color-line: #d4d4d4 !important;
+  --color-foam: #000000 !important;
+  --color-drift: #595959 !important;
+  --color-lumen-cyan: #4472c4 !important;
+  --color-lumen-pink: #ed7d31 !important;
+  --hairline: #d4d4d4 !important;
+}
+html.xl-on,
+html.xl-on body {
+  overflow-y: auto !important;
+  height: auto !important;
+  overscroll-behavior: auto !important;
+}
+
+/* Everything the app renders, apart from the chrome and the consent banner. */
+body > :not([id^="xl-"], #cmpwrapper, script) {
+  zoom: var(--xl-zoom);
+}
+:where(body > :not([id^="xl-"], #cmpwrapper)) :where(*, *::before, *::after) {
+  font-family: var(--xl-cell-font) !important;
+  letter-spacing: normal !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  text-transform: none !important;
+  -webkit-font-smoothing: auto !important;
+  animation-duration: 0s !important;
+  image-rendering: auto !important;
+  clip-path: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+:where(body > :not([id^="xl-"], #cmpwrapper)),
+:where(body > :not([id^="xl-"], #cmpwrapper)) :where(*) {
+  color: #000 !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: var(--xl-cell-border) !important;
+}
+:where(body > :not([id^="xl-"], #cmpwrapper)) :where(a) {
+  color: var(--xl-link) !important;
+  text-decoration: underline !important;
+}
+
+/* --- decoration, ads and floating controls the chrome replaces --- */
+.ds-stage canvas,
+.ds-dim,
+.ds-vignette,
+.ds-edge,
+.ds-flash,
+.ds-crt,
+.ds-mascot,
+.ds-floor,
+.ds-amb,
+.ds-title,
+.ds-mute,
+.ds-tierline,
+.ds-sonar-scope,
+.ds-landed img.icon,
+.hub-crt,
+.ds-boot img.krill,
+.ds-boot::after,
+[class*="SiteMenu-module"][class*="__trigger"],
+[class*="SettingsControl-module"][class*="__trigger"],
+[class*="CharacterControl-module"][class*="__trigger"],
+.kr-ad-rail,
+.kr-ad-results,
+#fixed_container_bottom,
+.adunitwrapper,
+.ds-root::before,
+.ds-root::after,
+.ds-root :is(.ds-dock, .ds-intro, .ds-next-wrap, .ds-done)::before,
+.ds-root :is(.ds-dock, .ds-intro, .ds-next-wrap, .ds-done)::after {
+  display: none !important;
+}
+
+/* --- game layout: un-fix the full-screen stage and flow it down column B --- */
+.kr-ad-layout {
+  display: block !important;
+  position: static !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+.ds-root {
+  position: relative !important;
+  inset: auto !important;
+  z-index: auto !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 20px 0 60px 64px !important;
+  transform: none !important;
+}
+.ds-root > div:not([class]),
+.ds-stage,
+.ds-world {
+  display: contents !important;
+}
+:where(.ds-root) :is(.ds-surface, .ds-hud, .ds-card, .ds-correction, .ds-reject, .ds-dock, .ds-preview-pill, .ds-chip, .ds-landed, .ds-next-wrap, .ds-intro, .ds-done) {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+  z-index: auto !important;
+  width: 448px !important;
+  max-width: calc(100vw - 120px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+}
+.ds-surface { order: 1; }
+.ds-hud { order: 2; }
+.ds-card { order: 3; }
+.ds-preview-pill { order: 4; }
+.ds-correction { order: 6; }
+.ds-reject { order: 6; }
+.ds-dock { order: 5; }
+.ds-chip { order: 7; }
+.ds-landed { order: 8; }
+.ds-next-wrap { order: 9; }
+.ds-intro { order: 10; }
+.ds-done { order: 11; }
+
+/* Title cell + subtitle. */
+.ds-surface {
+  display: block !important;
+  height: auto !important;
+  text-align: left !important;
+}
+.ds-surface,
+.ds-surface > * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.ds-surface > * {
+  position: static !important;
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+.ds-tagline {
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: #0e2841 !important;
+  white-space: nowrap !important;
+}
+.ds-tagline {
+  text-transform: lowercase !important;
+}
+.ds-tagline::before {
+  content: "Krillion · ";
+  text-transform: none;
+}
+.ds-subline {
+  height: 20px !important;
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+  color: #7f7f7f !important;
+  font-style: italic !important;
+  white-space: nowrap !important;
+}
+.ds-root[data-phase="done"] .ds-surface,
+.ds-root[data-phase="done"] .ds-hud {
+  display: none !important;
+}
+
+/* HUD → a three-column table: Depth | Progress | Score. */
+.ds-hud {
+  display: grid !important;
+  grid-template-columns: 128px 192px 128px;
+  gap: 0 !important;
+  margin-top: 20px !important;
+  height: 40px !important;
+}
+.ds-hud > * {
+  display: grid !important;
+  min-width: 0 !important;
+  background: none !important;
+  grid-template-rows: 20px 20px;
+  position: static !important;
+  transform: none !important;
+  width: auto !important;
+  height: 40px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+.ds-hud .label,
+.ds-hud-mid::before {
+  background: var(--xl-table-head) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+  padding: 0 4px !important;
+  text-align: left !important;
+  opacity: 1 !important;
+}
+.ds-hud .label::first-letter {
+  text-transform: uppercase;
+}
+.ds-hud .label {
+  text-transform: lowercase !important;
+}
+.ds-hud-mid::before {
+  content: "Progress";
+}
+.ds-depth-num,
+.ds-score-num {
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+  padding: 0 4px !important;
+  text-align: right !important;
+  border-bottom: 1px solid var(--xl-table-head) !important;
+  font-variant-numeric: tabular-nums;
+}
+.ds-score-num {
+  font-weight: 700 !important;
+}
+.ds-hud-mid {
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 20px 20px;
+  border-bottom: 1px solid var(--xl-table-head) !important;
+}
+.ds-hud-mid::before {
+  grid-column: 1 / -1;
+}
+.ds-dots {
+  display: flex !important;
+  gap: 2px !important;
+  align-items: center !important;
+  padding: 0 4px !important;
+  margin: 0 !important;
+}
+.ds-dots i {
+  display: block !important;
+  width: 11px !important;
+  height: 11px !important;
+  margin: 0 !important;
+  border: 1px solid #a6a6a6 !important;
+  background: #fff !important;
+  transform: none !important;
+}
+.ds-dots i.done {
+  background: var(--xl-green) !important;
+  border-color: var(--xl-green-dark) !important;
+}
+.ds-dots i.cur {
+  background: #ffeb9c !important;
+  border-color: #9c5700 !important;
+}
+.ds-prompt-count {
+  font-size: 13px !important;
+  line-height: 20px !important;
+  color: #404040 !important;
+  padding: 0 4px !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Prompt → a heading cell with Excel's Heading 1 underline. */
+.ds-card {
+  display: block !important;
+  margin-top: 20px !important;
+  height: auto !important;
+}
+.ds-card .rnd {
+  height: 20px !important;
+  font-size: 13px !important;
+  color: #7f7f7f !important;
+  line-height: 20px !important;
+}
+.ds-card .prompt {
+  min-height: 40px !important;
+  padding: 0 !important;
+  font-size: 22px !important;
+  line-height: 40px !important;
+  font-weight: 700 !important;
+  color: #0e2841 !important;
+}
+.ds-card .hint {
+  height: 20px !important;
+  background: linear-gradient(var(--xl-table-head), var(--xl-table-head)) left bottom / 100% 3px no-repeat !important;
+  font-size: 13px !important;
+  color: #7f7f7f !important;
+  font-style: italic !important;
+}
+
+/* Answer dock → timer cell, the active cell, and a Submit button. */
+.ds-dock {
+  display: block !important;
+  margin-top: 20px !important;
+}
+.ds-root:not([data-phase="answering"]) .ds-dock {
+  display: none !important;
+}
+.ds-dock-inner {
+  display: grid !important;
+  grid-template-columns: 64px 1fr 64px;
+  align-items: stretch !important;
+  gap: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.ds-sonar-wrap {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  width: 64px !important;
+  height: 40px !important;
+  margin: 0 !important;
+  padding: 0 6px !important;
+  border: 1px solid var(--xl-cell-border) !important;
+  border-right: 0 !important;
+  background: #f2f2f2 !important;
+}
+.ds-time-digits {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums;
+  color: #000 !important;
+}
+.ds-time-digits::after {
+  content: "s";
+  font-weight: 400;
+  font-size: 13px;
+  margin-left: 1px;
+  color: #595959;
+}
+.ds-input-col {
+  position: relative !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.ds-input {
+  display: block !important;
+  width: 100% !important;
+  height: 40px !important;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  font-size: 18px !important;
+  line-height: 36px !important;
+  color: #000 !important;
+  background: #fff !important;
+  border: 2px solid var(--xl-green) !important;
+  outline: none !important;
+  caret-color: #000 !important;
+}
+.ds-input::placeholder {
+  color: #a6a6a6 !important;
+  font-style: italic;
+}
+/* The fuse burns down with the clock: show it as a data bar under the cell. */
+.ds-fuse {
+  position: absolute !important;
+  left: 2px !important;
+  right: 2px !important;
+  bottom: 2px !important;
+  height: 3px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.ds-fuse-fill {
+  height: 100% !important;
+  background: linear-gradient(90deg, #638ec6, #a9c4ea) !important;
+}
+.ds-dive-btn,
+.ds-begin-btn,
+.ds-next-btn,
+.ds-root .btn-descend,
+main .btn-descend,
+.ds-boot .btn-descend {
+  display: inline-block !important;
+  text-align: center !important;
+  height: 28px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 26px !important;
+  white-space: nowrap !important;
+  color: #fff !important;
+  background: var(--xl-green) !important;
+  border: 1px solid var(--xl-green-dark) !important;
+  text-decoration: none !important;
+  cursor: default !important;
+  transform: none !important;
+}
+.ds-dive-btn:hover,
+.ds-begin-btn:hover,
+.ds-next-btn:hover,
+.ds-root .btn-descend:hover,
+main .btn-descend:hover {
+  background: var(--xl-green-dark) !important;
+}
+.ds-dive-btn {
+  height: 40px !important;
+  line-height: 38px !important;
+  width: 64px !important;
+  padding: 0 !important;
+  border-left: 0 !important;
+}
+.ds-dive-btn:disabled {
+  background: #f3f2f1 !important;
+  color: #a19f9d !important;
+  border-color: #c8c6c4 !important;
+}
+.ds-dive-btn::before {
+  content: "";
+}
+
+/* Answer corrections and rejections → cell notes. */
+.ds-correction,
+.ds-reject {
+  display: block !important;
+  margin-top: 20px !important;
+}
+.ds-correction:empty,
+.ds-reject:empty {
+  display: none !important;
+}
+.ds-correction > *,
+.ds-reject > *,
+.ds-preview-pill {
+  position: static !important;
+  transform: none !important;
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
+  background: #ffffe1 !important;
+  border: 1px solid #a6a6a6 !important;
+  color: #000 !important;
+  white-space: normal !important;
+}
+.ds-reject > * {
+  background: #ffc7ce !important;
+  color: #9c0006 !important;
+  border-color: #e6a1a8 !important;
+}
+.ds-correction button {
+  display: inline-block !important;
+  margin: 4px 6px 0 0 !important;
+  padding: 1px 10px !important;
+  font-size: 13px !important;
+  background: #fff !important;
+  border: 1px solid #8a8886 !important;
+  color: #000 !important;
+}
+.ds-correction button:hover {
+  background: #f3f2f1 !important;
+}
+.ds-preview-pill {
+  margin-top: 20px !important;
+  width: 448px !important;
+  font-style: italic !important;
+  color: #595959 !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  line-height: 20px !important;
+}
+.ds-preview-pill b {
+  font-style: normal;
+  font-weight: 700;
+  color: #000 !important;
+}
+
+/* AutoCorrect preview → a yellow cell note under the input. */
+.ds-correction {
+  margin-top: 0 !important;
+}
+.ds-correction .ds-correction-panel {
+  display: block !important;
+  width: 448px !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 2px 6px !important;
+  font-style: normal !important;
+  text-align: left !important;
+  color: #000 !important;
+  background: #ffffe1 !important;
+  border: 1px solid #a6a6a6 !important;
+  border-top: 0 !important;
+}
+.ds-correction-panel > * {
+  display: block !important;
+  text-align: left !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+}
+.ds-correction-change::before {
+  content: "AutoCorrect: ";
+  font-weight: 700;
+}
+.ds-correction-hint {
+  color: #595959 !important;
+  font-style: italic !important;
+}
+
+/* Rejected answer → a Bad-style cell under the input, like a validation error. */
+.ds-reject {
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 20px !important;
+  padding: 0 6px 0 22px !important;
+  text-align: left !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+  color: #9c0006 !important;
+  background: #ffc7ce !important;
+  border: 1px solid #e6a1a8 !important;
+  border-top: 0 !important;
+}
+.ds-reject::before {
+  content: "\2716";
+  position: absolute;
+  left: 6px;
+  font-size: 11px;
+}
+.ds-reject:empty {
+  display: none !important;
+}
+
+/* The answer in flight: a copied cell with marching ants. */
+.ds-chip {
+  display: block !important;
+  width: auto !important;
+  margin-top: 20px !important;
+  padding: 0 8px !important;
+  height: 20px !important;
+  font-weight: 700 !important;
+  outline: 2px dashed var(--xl-green) !important;
+  outline-offset: -1px !important;
+}
+.ds-chip::after {
+  content: "  Calculating…";
+  font-weight: 400;
+  font-style: italic;
+  color: #7f7f7f;
+  white-space: pre;
+}
+
+/* Landed answer → a result row with conditional formatting. */
+.ds-landed {
+  display: grid !important;
+  grid-template-columns: 128px 192px 128px;
+  grid-template-rows: 20px auto;
+  margin-top: 20px !important;
+  height: auto !important;
+  text-align: left !important;
+}
+.ds-landed > * {
+  margin: 0 !important;
+  padding: 0 4px !important;
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+  height: 20px;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid var(--xl-cell-border) !important;
+}
+.ds-landed .tname {
+  font-weight: 700 !important;
+}
+.ds-landed .tpts {
+  text-align: right !important;
+  color: #595959 !important;
+  font-size: 13px !important;
+}
+.ds-landed .tpts b {
+  color: #000 !important;
+  font-size: 14.5px;
+  margin-right: 4px;
+}
+.ds-landed .tsub {
+  grid-column: 1 / -1;
+  height: auto;
+  white-space: normal !important;
+  font-style: italic !important;
+  color: #595959 !important;
+  border-bottom: 0 !important;
+}
+
+/* Conditional formatting by tier (Excel's built-in presets). */
+[data-cf] {
+  font-weight: 700;
+}
+:is(.ds-landed[data-cf="miss"] .tname, [data-cf="miss"]:not(.ds-landed)) {
+  background: #ffc7ce !important;
+  color: #9c0006 !important;
+}
+:is(.ds-landed[data-cf="plankton"] .tname, [data-cf="plankton"]:not(.ds-landed)) {
+  background: #ffeb9c !important;
+  color: #9c5700 !important;
+}
+:is(.ds-landed[data-cf="school"] .tname, [data-cf="school"]:not(.ds-landed)) {
+  background: #e2efda !important;
+  color: #375623 !important;
+}
+:is(.ds-landed[data-cf="rare"] .tname, [data-cf="rare"]:not(.ds-landed)) {
+  background: #c6efce !important;
+  color: #006100 !important;
+}
+:is(.ds-landed[data-cf="deep"] .tname, [data-cf="deep"]:not(.ds-landed)) {
+  background: #63be7b !important;
+  color: #fff !important;
+}
+:is(.ds-landed[data-cf="krill"] .tname, [data-cf="krill"]:not(.ds-landed)) {
+  background: var(--xl-green-dark) !important;
+  color: #fff !important;
+}
+
+/* Begin / Descend / Surface. */
+.ds-next-wrap {
+  display: block !important;
+  margin-top: 20px !important;
+}
+
+/* Intro: rules, the Begin button and links. */
+.ds-intro {
+  display: block !important;
+  margin-top: 20px !important;
+}
+.ds-intro-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.ds-intro-inner > * {
+  margin: 0 0 20px !important;
+}
+.ds-howto {
+  width: 100% !important;
+  margin: 0 0 20px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  order: 2;
+}
+.ds-howto summary {
+  height: 20px !important;
+  line-height: 20px !important;
+  font-size: 14.5px !important;
+  color: var(--xl-link) !important;
+  text-decoration: underline !important;
+  cursor: default !important;
+  padding: 0 !important;
+  list-style-position: inside;
+}
+.ds-howto summary::first-letter {
+  text-transform: uppercase;
+}
+.ds-howto ul {
+  display: block !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+.ds-howto li {
+  height: 20px !important;
+  line-height: 20px !important;
+  margin: 0 !important;
+  padding: 0 0 0 16px !important;
+  font-size: 14.5px !important;
+  white-space: nowrap !important;
+}
+.ds-howto li::before {
+  content: none !important;
+}
+.ds-howto li::first-letter {
+  text-transform: uppercase;
+}
+.ds-intro-inner > .ds-begin-btn {
+  margin-bottom: 32px !important;
+}
+.ds-begin-btn {
+  order: 1;
+  width: auto !important;
+}
+:is(.ds-begin-btn, .ds-next-btn)[data-xl-label] {
+  font-size: 0 !important;
+}
+:is(.ds-begin-btn, .ds-next-btn)[data-xl-label]::after {
+  content: attr(data-xl-label);
+  font-size: 14px;
+}
+.ds-intro-meta {
+  order: 3;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  width: 100% !important;
+  height: 20px !important;
+  font-size: 14.5px !important;
+  color: #595959 !important;
+}
+.ds-intro-meta > div {
+  display: flex !important;
+  gap: 16px !important;
+}
+.ds-intro-meta a {
+  padding: 0 !important;
+  border: 0 !important;
+  font-size: 14.5px !important;
+}
+.ds-intro-inner > div:has(.kr-ad-privacy) {
+  order: 4;
+}
+.ds-intro-meta,
+.ds-intro-meta a,
+.ds-prompt-count,
+.ds-card .rnd,
+.ds-card .hint,
+.ds-landed .tname,
+.ds-landed .tpts,
+.ds-landed .tpts b,
+.ds-done-krill,
+.ds-done :is(.btn-descend, .btn-quiet),
+main :is(.btn-descend, .btn-quiet),
+.ds-boot .btn-descend,
+.ds-boot-title,
+.ds-boot-label {
+  text-transform: lowercase !important;
+}
+.ds-intro-meta::first-letter,
+.ds-intro-meta a::first-letter,
+.ds-prompt-count::first-letter,
+.ds-card .rnd::first-letter,
+.ds-card .hint::first-letter,
+.ds-landed .tname::first-letter,
+.ds-done-krill::first-letter,
+.ds-done :is(.btn-descend, .btn-quiet)::first-letter,
+main :is(.btn-descend, .btn-quiet)::first-letter,
+.ds-boot .btn-descend::first-letter {
+  text-transform: uppercase;
+}
+
+/* Small links like Privacy and Update Privacy Settings. */
+.kr-ad-privacy {
+  display: flex !important;
+  gap: 16px !important;
+  align-items: center !important;
+  font-size: 13px !important;
+  position: static !important;
+}
+.kr-ad-privacy a,
+.kr-ad-privacy button {
+  font-size: 13px !important;
+  color: var(--xl-link) !important;
+  text-decoration: underline !important;
+  background: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+body > div:has(> .kr-ad-privacy) {
+  padding: 0 0 20px 64px;
+  zoom: var(--xl-zoom);
+}
+
+/* Dive log launcher (Unlimited and packs). */
+[class*="GameHistoryModal-module"][class*="__launcher"] {
+  order: 3;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  color: var(--xl-link) !important;
+  text-decoration: underline !important;
+  font-size: 14.5px !important;
+}
+
+/* --- results: the done screen as a report sheet --- */
+.ds-done {
+  display: block !important;
+  overflow: visible !important;
+  height: auto !important;
+}
+.ds-done-inner {
+  max-width: none !important;
+  width: 448px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.ds-done-inner > div {
+  gap: 20px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.ds-done :is(p, span, li, dd, dt) {
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+}
+.ds-done .ds-done-krill {
+  font-size: 22px !important;
+  line-height: 40px !important;
+  font-weight: 700 !important;
+  color: #0e2841 !important;
+}
+.ds-done-krill::after {
+  content: " · Dive report";
+}
+.ds-done .text-\[5rem\] {
+  font-size: 40px !important;
+  line-height: 40px !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums;
+}
+.ds-done .mt-4 {
+  margin-top: 20px !important;
+}
+.ds-done .mt-3,
+.ds-done .mt-1 {
+  margin-top: 0 !important;
+}
+.ds-done [class*="text-drift"] {
+  color: #595959 !important;
+}
+.ds-done .text-lumen-cyan {
+  color: var(--xl-link) !important;
+}
+.ds-done .text-lumen-pink {
+  color: #c00000 !important;
+}
+
+/* Section headers (.fathom) → Heading 2 cells. */
+:is(.ds-done, main, [class*="__dialog"], dialog) .fathom {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  height: 20px !important;
+  margin: 0 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-bottom: 2px solid #8ea9db !important;
+  font-size: 14.5px !important;
+  line-height: 18px !important;
+  font-weight: 700 !important;
+  color: #0e2841 !important;
+}
+:is(.ds-done, main, [class*="__dialog"], dialog) .fathom::before,
+:is(.ds-done, main, [class*="__dialog"], dialog) .fathom::after {
+  display: none !important;
+}
+:is(.ds-done, main, [class*="__dialog"], dialog) .fathom > span::first-letter {
+  text-transform: uppercase;
+}
+:is(.ds-done, main, [class*="__dialog"], dialog) .fathom .fathom-depth {
+  font-weight: 400 !important;
+  font-size: 13px !important;
+  color: #7f7f7f !important;
+}
+
+/* Dive log → a column chart. */
+.ds-done .relative.h-60 {
+  height: 200px !important;
+  margin-top: 20px !important;
+  border-left: 1px solid #bfbfbf !important;
+  border-bottom: 1px solid #bfbfbf !important;
+}
+.ds-done .relative.h-60 .border-dashed {
+  border-style: solid !important;
+  border-color: #e7e7e7 !important;
+}
+.ds-done .relative.h-60 .w-px {
+  width: 24px !important;
+  background: var(--xl-table-head) !important;
+  opacity: 1 !important;
+}
+.ds-done .relative.h-60 .animate-sink {
+  display: none !important;
+}
+.ds-done .relative.h-60 span {
+  font-size: 11px !important;
+  color: #595959 !important;
+}
+
+/* The bearing → a lookup table. */
+.xl-bearing ul,
+.xl-catch ul {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.xl-bearing li {
+  display: grid !important;
+  grid-template-columns: 20px 64px 1fr;
+  gap: 0 !important;
+  align-items: center !important;
+  height: 20px !important;
+  padding: 0 !important;
+  border-bottom: 1px solid var(--xl-cell-border) !important;
+}
+.xl-bearing li img,
+.xl-catch li img {
+  width: 16px !important;
+  height: 16px !important;
+  image-rendering: pixelated !important;
+}
+.xl-bearing li span {
+  width: auto !important;
+  padding: 0 4px !important;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.xl-bearing li span.text-foam {
+  font-weight: 700 !important;
+  background: #ffeb9c !important;
+}
+
+/* The catch → a table: # | prompt / answer | points. */
+.xl-catch li {
+  padding: 0 !important;
+  border-bottom: 1px solid var(--xl-cell-border) !important;
+}
+.xl-catch li > button {
+  display: grid !important;
+  grid-template-columns: 20px 20px 1fr 48px 16px;
+  align-items: center !important;
+  gap: 0 !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  text-align: left !important;
+  background: none !important;
+  border: 0 !important;
+  cursor: default !important;
+}
+.xl-catch li > button:hover {
+  background: #f2f2f2 !important;
+}
+.xl-catch li > button:not(:has(img))::after {
+  content: none;
+}
+.xl-catch li > button > div {
+  grid-column: 3;
+  padding: 0 4px !important;
+  min-width: 0;
+}
+.xl-catch li > button:not(:has(> img)) > div {
+  grid-column: 3;
+}
+.xl-catch li > button > span:first-child {
+  grid-column: 1;
+  text-align: right !important;
+  width: auto !important;
+  color: #7f7f7f !important;
+  font-size: 13px !important;
+}
+.xl-catch li > button > img {
+  grid-column: 2;
+  justify-self: center;
+}
+.xl-catch li > button > span.tabular-nums:not(:first-child) {
+  grid-column: 4;
+  text-align: right !important;
+  padding: 0 4px !important;
+  line-height: 20px !important;
+}
+.xl-catch li > button > span:last-child {
+  grid-column: 5;
+  text-align: center !important;
+  width: auto !important;
+}
+.xl-catch li > button p:first-child {
+  font-size: 12px !important;
+  color: #7f7f7f !important;
+}
+.xl-catch li > button p:last-child {
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+}
+/* Expanded round: every answer, scrollable, with scores formatted. */
+.xl-catch li > :not(button) {
+  margin: 0 0 4px 40px !important;
+  padding: 0 !important;
+  border: 1px solid var(--xl-cell-border) !important;
+  background: #fff !important;
+}
+.xl-catch li > :not(button) :is(li, div) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  min-height: 20px !important;
+}
+.xl-catch li > :not(button) li {
+  border-bottom: 1px solid #ededed !important;
+}
+.xl-catch li > :not(button) p {
+  font-size: 13px !important;
+  line-height: 20px !important;
+}
+.xl-catch li > :not(button) p + p {
+  color: #7f7f7f !important;
+  font-style: italic;
+}
+.xl-catch [data-cf] {
+  padding: 0 4px !important;
+}
+
+/* Buttons. */
+.ds-root .btn-quiet,
+main .btn-quiet,
+[class*="__dialog"] .btn-quiet,
+dialog .btn-quiet {
+  display: inline-block !important;
+  text-align: center !important;
+  line-height: 26px !important;
+  white-space: nowrap !important;
+  height: 28px !important;
+  min-height: 0 !important;
+  padding: 0 14px !important;
+  font-size: 14px !important;
+  color: #000 !important;
+  background: #fff !important;
+  border: 1px solid #8a8886 !important;
+  text-decoration: none !important;
+  cursor: default !important;
+  transform: none !important;
+}
+.ds-root .btn-quiet:hover,
+main .btn-quiet:hover,
+[class*="__dialog"] .btn-quiet:hover,
+dialog .btn-quiet:hover {
+  background: #f3f2f1 !important;
+}
+.ds-done .flex.gap-3 {
+  gap: 8px !important;
+}
+.ds-done .flex.gap-3 > .flex-1 {
+  flex: none !important;
+}
+.ds-done svg text {
+  font-size: 9px !important;
+}
+.ds-done .flex.flex-col.gap-3 {
+  gap: 0 !important;
+  align-items: flex-start !important;
+}
+.ds-done .flex.flex-col.gap-3 > * {
+  margin-bottom: 4px !important;
+  text-align: left !important;
+}
+.ds-done .flex.flex-col.gap-3 > .btn-descend,
+.ds-done .flex.flex-col.gap-3 > .btn-quiet {
+  width: auto !important;
+}
+
+/* Cross-promo panel → a bordered text box. */
+.ds-done .hub-panel,
+main .hub-panel {
+  display: block !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  border: 1px solid #a6a6a6 !important;
+  background: #fff !important;
+}
+.ds-done .hub-panel *,
+main .hub-panel * {
+  font-size: 13px !important;
+  line-height: 18px !important;
+}
+.ds-done .hub-panel h2 {
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  margin: 2px 0 6px !important;
+}
+.ds-done .hub-panel img {
+  width: 64px !important;
+  height: auto !important;
+  filter: none !important;
+}
+.ds-done .hub-panel [class*="__split"] {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: flex-start !important;
+}
+.ds-done .hub-panel [class*="__clip"] {
+  position: relative !important;
+  width: 64px !important;
+  flex: none;
+  border: 1px solid var(--xl-cell-border) !important;
+}
+.ds-done .hub-panel [class*="__clipTag"] {
+  display: none !important;
+}
+.ds-done .hub-panel dl {
+  display: flex !important;
+  gap: 16px !important;
+  margin: 6px 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+.ds-done .hub-panel dl > div {
+  border: 0 !important;
+  padding: 0 !important;
+}
+.ds-done .hub-panel dt {
+  color: #7f7f7f !important;
+}
+.ds-done .hub-panel .btn-descend {
+  height: 24px !important;
+  font-size: 13px !important;
+}
+
+/* --- loading screen and paywalls --- */
+.ds-boot {
+  position: static !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 20px 0 40px 64px !important;
+  text-align: left !important;
+}
+.ds-boot > * {
+  margin: 0 0 20px !important;
+  text-align: left !important;
+}
+.ds-boot-title {
+  font-size: 22px !important;
+  line-height: 40px !important;
+  font-weight: 700 !important;
+  color: #0e2841 !important;
+  margin: 0 !important;
+}
+.ds-boot-title::first-letter,
+.ds-boot-label::first-letter {
+  text-transform: uppercase;
+}
+.ds-boot-label {
+  color: #7f7f7f !important;
+  font-style: italic !important;
+  line-height: 20px !important;
+}
+.ds-boot-label::after {
+  content: " (Calculating)";
+}
+.ds-boot-msg {
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+  margin: 0 !important;
+}
+.ds-boot .ds-next-btn {
+  margin: 0 0 20px !important;
+}
+
+/* --- other pages: packs, My Krillion, friends, FAQ, privacy, restore --- */
+body > main,
+body > div > main,
+.kr-ad-layout > main {
+  position: static !important;
+  display: block !important;
+  width: auto !important;
+  max-width: 704px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 20px 0 60px 64px !important;
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+}
+main :is(.hub-inner, [class*="max-w-"]) {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+main :is(h1, h2, h3) {
+  font-weight: 700 !important;
+  color: #0e2841 !important;
+}
+main h1 {
+  font-size: 22px !important;
+  line-height: 40px !important;
+  margin: 0 !important;
+}
+main h2:not(.fathom) {
+  font-size: 15px !important;
+  line-height: 20px !important;
+  margin: 20px 0 0 !important;
+}
+main :is(p, li, dd, dt, span, a) {
+  font-size: 14.5px !important;
+  line-height: 20px !important;
+}
+main p {
+  margin: 0 0 0 !important;
+}
+main .text-drift,
+main [class*="text-drift"],
+main [class*="__eyebrow"],
+main [class*="__note"] {
+  color: #595959 !important;
+}
+main .fathom.fathom {
+  margin-top: 20px !important;
+}
+main section {
+  margin: 20px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+main .flex-col {
+  gap: 0 !important;
+}
+main [class*="mt-8"],
+main [class*="mt-10"] {
+  margin-top: 20px !important;
+}
+main [class*="mb-4"] {
+  margin-bottom: 0 !important;
+}
+main header {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* Wordmarks → title cell. */
+main :is(.hub-wordmark, [class*="__brand"], a.font-display.text-2xl) {
+  display: block !important;
+  font-size: 22px !important;
+  line-height: 40px !important;
+  font-weight: 700 !important;
+  color: #0e2841 !important;
+  text-decoration: none !important;
+  text-transform: lowercase !important;
+}
+main :is(.hub-wordmark, [class*="__brand"], a.font-display.text-2xl)::first-letter {
+  text-transform: uppercase;
+}
+main .hub-sub {
+  color: #7f7f7f !important;
+  font-style: italic;
+}
+main .hub-back {
+  display: inline-block !important;
+  margin-top: 20px !important;
+}
+/* Pack cards → rows with a thumbnail picture. */
+main .pack-card {
+  display: grid !important;
+  grid-template-columns: 96px 1fr;
+  gap: 0 8px !important;
+  align-items: start !important;
+  margin: 0 !important;
+  padding: 4px 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--xl-cell-border) !important;
+  text-decoration: none !important;
+  color: #000 !important;
+  transform: none !important;
+}
+main .pack-card:first-child {
+  border-top: 1px solid var(--xl-cell-border) !important;
+}
+main .pack-card:hover {
+  background: #f2f2f2 !important;
+}
+main .pack-art {
+  position: relative !important;
+  width: 96px !important;
+  height: 54px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--xl-cell-border) !important;
+}
+main .pack-art-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  filter: none !important;
+}
+main .pack-chip,
+main .pack-free-banner {
+  position: static !important;
+  display: inline-block !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+  padding: 0 4px !important;
+  background: #f2f2f2 !important;
+  border: 1px solid var(--xl-cell-border) !important;
+  color: #404040 !important;
+}
+main .pack-chip {
+  display: none !important;
+}
+main .pack-free-banner {
+  grid-column: 1 / -1;
+  display: flex !important;
+  gap: 8px;
+  margin-bottom: 4px !important;
+  background: #ffeb9c !important;
+  color: #9c5700 !important;
+  border-color: #f4d58d !important;
+}
+main .pack-free-banner * {
+  font-size: 11px !important;
+  color: inherit !important;
+}
+main .pack-body {
+  padding: 0 !important;
+}
+main .pack-name {
+  font-weight: 700 !important;
+  font-size: 14.5px !important;
+}
+main .pack-tagline {
+  color: #595959 !important;
+}
+main .pack-foot {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  text-align: left !important;
+}
+main .pack-foot,
+main .pack-go {
+  color: var(--xl-link) !important;
+  text-decoration: underline !important;
+  font-size: 13px !important;
+}
+main .hub-charting {
+  color: #7f7f7f !important;
+  font-style: italic;
+}
+main .hub-panel {
+  margin-top: 20px !important;
+}
+main .hub-panel .flex {
+  padding: 4px 0 !important;
+}
+main img {
+  filter: none !important;
+}
+
+/* My Krillion: stats → a header row over values; buddies → pictures. */
+main [class*="__identity"] {
+  padding: 8px !important;
+  border: 1px solid var(--xl-cell-border) !important;
+  background: #f8f8f8 !important;
+}
+main [class*="__identity"] h2 {
+  margin-top: 0 !important;
+}
+main [class*="__identity"] > * + * {
+  margin-top: 6px !important;
+}
+main [class*="__stats"] {
+  display: grid !important;
+  grid-template-columns: repeat(4, 128px);
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border: 0 !important;
+}
+main [class*="__stats"] > div {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+}
+main [class*="__stats"] dt {
+  background: var(--xl-table-head) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  padding: 0 4px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px !important;
+}
+main [class*="__stats"] dd {
+  margin: 0 !important;
+  padding: 0 4px !important;
+  text-align: right !important;
+  font-size: 14.5px !important;
+  border-bottom: 1px solid var(--xl-table-head) !important;
+}
+main [class*="__historyRow"] {
+  display: flex !important;
+  justify-content: space-between !important;
+  height: 20px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--xl-cell-border) !important;
+}
+main [class*="__historyRow"] span {
+  color: #595959 !important;
+}
+main [class*="__buddies"] {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+main [class*="__buddies"] > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: 4px !important;
+  border: 0 !important;
+  border-right: 1px solid var(--xl-cell-border) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+main [class*="__buddies"] img {
+  width: 32px !important;
+  height: 32px !important;
+  image-rendering: pixelated !important;
+}
+main [class*="__buddies"] small {
+  font-size: 12px !important;
+  color: #7f7f7f !important;
+}
+main [class*="__footer"] {
+  display: flex !important;
+  gap: 16px !important;
+  margin-top: 20px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+main [class*="__footer"] span {
+  color: #7f7f7f !important;
+}
+
+/* Form fields (restore, friends) → plain cell inputs. */
+main :is(input[type="text"], input[type="email"], input:not([type]), textarea) {
+  height: 24px !important;
+  padding: 0 6px !important;
+  font-size: 14.5px !important;
+  border: 1px solid #8a8886 !important;
+  background: #fff !important;
+  color: #000 !important;
+}
+main :is(input, textarea):focus {
+  outline: 2px solid var(--xl-green) !important;
+  outline-offset: -1px !important;
+}
+
+/* --- app dialogs: site menu, settings, wardrobe, dive log → Excel dialogs --- */
+[class*="__backdrop"] {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483200 !important;
+  background: rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: none !important;
+}
+html.xl-boss-on #xl-stats {
+  visibility: hidden;
+}
+dialog::backdrop {
+  background: rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: none !important;
+}
+:is(dialog, [class*="__dialog"]) {
+  color: #000 !important;
+  background: #fff !important;
+  border: 1px solid #8a8886 !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22) !important;
+  font-family: var(--xl-ui-font) !important;
+}
+:is(dialog, [class*="__dialog"]) :where(*) {
+  font-family: var(--xl-ui-font) !important;
+  font-size: 13px;
+}
+:is(dialog, [class*="__dialog"]) [class*="__panel"] {
+  background: #fff !important;
+  border: 0 !important;
+}
+:is(dialog, [class*="__dialog"]) header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-bottom: 6px !important;
+  border-bottom: 1px solid var(--xl-ui-border) !important;
+}
+:is(dialog, [class*="__dialog"]) h2 {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: #000 !important;
+  margin: 0 !important;
+}
+:is(dialog, [class*="__dialog"]) header p,
+:is(dialog, [class*="__dialog"]) [class*="__eyebrow"] {
+  font-size: 11px !important;
+  color: var(--xl-ui-muted) !important;
+}
+:is(dialog, [class*="__dialog"]) :is(button[class*="__close"], header button) {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  color: #000 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+:is(dialog, [class*="__dialog"]) :is(button[class*="__close"], header button):hover {
+  background: #c42b1c !important;
+  color: #fff !important;
+}
+/* Site menu → a navigation pane. */
+#site-menu nav {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+#site-menu nav > :is(a, button) {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 32px !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  background: none !important;
+  color: #000 !important;
+  text-decoration: none !important;
+  font-size: 13px !important;
+  text-align: left !important;
+  transform: none !important;
+}
+#site-menu nav > :is(a, button):hover {
+  background: var(--xl-ui) !important;
+}
+#site-menu nav > :is(a, button)[aria-current] {
+  background: var(--xl-green-light) !important;
+  box-shadow: inset 3px 0 var(--xl-green) !important;
+}
+#site-menu nav img,
+#site-menu nav [class*="__icon"] {
+  width: 16px !important;
+  height: 16px !important;
+  font-size: 13px !important;
+}
+#site-menu :is([class*="MerchLink-module"][class*="__link"], [class*="ChainleLink-module"][class*="__link"]) {
+  display: flex !important;
+  justify-content: space-between !important;
+  margin-top: 8px !important;
+  padding: 6px 8px !important;
+  border: 1px solid var(--xl-ui-border) !important;
+  text-decoration: none !important;
+  color: #000 !important;
+}
+#site-menu :is([class*="MerchLink-module"], [class*="ChainleLink-module"]):not([class*="__link"]) {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+  text-decoration: none !important;
+}
+#site-menu [class*="__detail"] {
+  display: block;
+  color: var(--xl-ui-muted) !important;
+  font-size: 12px !important;
+}
+#site-menu footer,
+#site-menu .fathom {
+  color: var(--xl-ui-muted) !important;
+  font-size: 11px !important;
+}
+#site-menu .fathom {
+  border: 0 !important;
+  border-bottom: 1px solid var(--xl-ui-border) !important;
+  margin: 8px 0 4px !important;
+  height: auto !important;
+  font-weight: 600 !important;
+}
+/* Settings toggles → Fluent switches. */
+label[class*="SettingsControl-module"] {
+  display: flex !important;
+  text-align: left !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 8px 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--xl-ui-border) !important;
+}
+[class*="SettingsControl-module"][class*="__preferenceCopy"] {
+  display: block !important;
+  text-align: left !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+[class*="SettingsControl-module"][class*="__preferenceList"] {
+  display: block !important;
+  border: 0 !important;
+}
+[class*="SettingsControl-module"][class*="__preferenceLabel"] {
+  display: block;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  color: #000 !important;
+}
+[class*="SettingsControl-module"][class*="__preferenceDescription"] {
+  display: block;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 2px 0 0 !important;
+  font-size: 12px !important;
+  color: var(--xl-ui-muted) !important;
+}
+[class*="SettingsControl-module"][class*="__toggle"] {
+  position: relative !important;
+  flex: none !important;
+  width: 40px !important;
+  height: 20px !important;
+  border: 0 !important;
+  background: none !important;
+}
+[class*="SettingsControl-module"][class*="__toggle"] input {
+  position: absolute !important;
+  inset: 0 !important;
+  opacity: 0 !important;
+  margin: 0 !important;
+  z-index: 1;
+}
+[class*="SettingsControl-module"][class*="__track"] {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 40px !important;
+  height: 20px !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  border: 1px solid #605e5c !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+}
+[class*="SettingsControl-module"][class*="__thumb"] {
+  position: absolute !important;
+  top: 3px !important;
+  left: 3px !important;
+  right: auto !important;
+  bottom: auto !important;
+  min-width: 0 !important;
+  width: 12px !important;
+  height: 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: #605e5c !important;
+  font-size: 0 !important;
+  transform: none !important;
+  transition: left 0.1s !important;
+}
+[class*="SettingsControl-module"][class*="__toggle"] input:checked + [class*="__track"] {
+  background: var(--xl-green) !important;
+  border-color: var(--xl-green) !important;
+}
+[class*="SettingsControl-module"][class*="__toggle"] input:checked + [class*="__track"] [class*="__thumb"] {
+  left: 23px !important;
+  background: #fff !important;
+}
+[class*="SettingsControl-module"][class*="__toggle"] input:focus-visible + [class*="__track"] {
+  outline: 2px solid #000 !important;
+  outline-offset: 2px !important;
+}
+[class*="__dialog"] a:not(.btn-quiet) {
+  color: var(--xl-link) !important;
+}
+/* Dive log grid → cells. */
+[class*="GameHistoryModal-module"][class*="__grid"] {
+  gap: 0 !important;
+  border-top: 1px solid var(--xl-cell-border) !important;
+  border-left: 1px solid var(--xl-cell-border) !important;
+}
+dialog[open] {
+  position: fixed !important;
+  inset: 0 !important;
+  margin: auto !important;
+  max-height: min(80vh, 640px) !important;
+  max-width: min(92vw, 520px) !important;
+  height: fit-content !important;
+  z-index: 2147483200 !important;
+  zoom: 1 !important;
+}
+#site-menu[open] {
+  max-width: min(92vw, 420px) !important;
+}
+button[class*="GameHistoryModal-module"][class*="__tile"] {
+  min-height: 40px !important;
+  padding: 2px 4px !important;
+  border: 0 !important;
+  border-right: 1px solid var(--xl-cell-border) !important;
+  border-bottom: 1px solid var(--xl-cell-border) !important;
+  background: #fff !important;
+  color: #000 !important;
+  text-align: right !important;
+  transform: none !important;
+}
+button[class*="GameHistoryModal-module"][class*="__tile"]:hover {
+  background: #f2f2f2 !important;
+}
+[class*="GameHistoryModal-module"][class*="__current"] {
+  outline: 2px solid var(--xl-green) !important;
+  outline-offset: -2px !important;
+}
+[class*="GameHistoryModal-module"]:is([class*="__tileNote"], [class*="__tileNum"]) {
+  display: block;
+  border: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  font-size: 11px !important;
+  color: var(--xl-ui-muted) !important;
+}
+/* Wardrobe pictures stay pixel art, but sit in cells. */
+[class*="CharacterControl-module"] img {
+  image-rendering: pixelated !important;
+  filter: none !important;
+}
+[class*="CharacterControl-module"] button:not(header button) {
+  border: 1px solid var(--xl-cell-border) !important;
+  background: #fff !important;
+  color: #000 !important;
+}
+[class*="CharacterControl-module"] button[aria-pressed="true"],
+[class*="CharacterControl-module"] button[aria-checked="true"] {
+  outline: 2px solid var(--xl-green) !important;
+  outline-offset: -2px !important;
+}

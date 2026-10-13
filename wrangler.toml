@@ -1,0 +1,8 @@
+name = "krillion-excel"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+routes = [{ pattern = "krillion.tomnewson.com", custom_domain = true }]
+
+[vars]
+# GitHub Pages build of this repo (see .github/workflows/pages.yml).
+SKIN_ORIGIN = "https://tomnewson.com/krillion"
